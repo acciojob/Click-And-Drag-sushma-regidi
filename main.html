@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Draggable Cubes</title>
+  <title>Draggable Items</title>
   <style>
     body {
       display: flex;
@@ -15,7 +14,7 @@
       margin: 0;
     }
 
-    .container {
+    .items {
       position: relative;
       width: 600px;
       height: 400px;
@@ -27,6 +26,7 @@
       gap: 20px;
       padding: 20px;
       box-sizing: border-box;
+      overflow: hidden;
     }
 
     .cube {
@@ -47,7 +47,7 @@
   </style>
 </head>
 <body>
-  <div class="container" id="container">
+  <div class="items" id="items">
     <div class="cube"></div>
     <div class="cube"></div>
     <div class="cube"></div>
@@ -57,15 +57,15 @@
   </div>
 
   <script>
-    const container = document.getElementById("container");
+    const container = document.getElementById("items");
     const cubes = document.querySelectorAll(".cube");
 
     const containerRect = container.getBoundingClientRect();
 
-    // Arrange cubes initially in grid formation
     const cols = 3;
     const cubeSize = 80;
     const gap = 20;
+
     cubes.forEach((cube, index) => {
       const row = Math.floor(index / cols);
       const col = index % cols;
@@ -81,8 +81,6 @@
       cube.addEventListener("mousedown", (e) => {
         activeCube = cube;
         const cubeRect = cube.getBoundingClientRect();
-
-        // Calculate mouse offset within the cube
         offsetX = e.clientX - cubeRect.left;
         offsetY = e.clientY - cubeRect.top;
 
@@ -100,7 +98,6 @@
       let newLeft = e.clientX - containerRect.left - offsetX;
       let newTop = e.clientY - containerRect.top - offsetY;
 
-      // Boundary constraints
       newLeft = Math.max(0, Math.min(container.clientWidth - cubeSize, newLeft));
       newTop = Math.max(0, Math.min(container.clientHeight - cubeSize, newTop));
 
@@ -113,7 +110,6 @@
         activeCube.style.transition = "background-color 0.2s ease";
         activeCube.style.zIndex = "";
       }
-
       activeCube = null;
       document.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseup", onMouseUp);
@@ -121,3 +117,5 @@
   </script>
 </body>
 </html>
+
+   
