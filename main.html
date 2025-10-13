@@ -1,42 +1,123 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Click and Drag</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Draggable Cubes</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+      margin: 0;
+    }
+
+    .container {
+      position: relative;
+      width: 600px;
+      height: 400px;
+      background-color: #fff;
+      border: 3px solid #000;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 20px;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .cube {
+      width: 80px;
+      height: 80px;
+      background-color: #3498db;
+      border-radius: 10px;
+      cursor: grab;
+      position: absolute;
+      user-select: none;
+      transition: background-color 0.2s ease;
+    }
+
+    .cube:active {
+      cursor: grabbing;
+      background-color: #1d6fa5;
+    }
+  </style>
 </head>
 <body>
-  <div class="items">
-    <div class="item item1">01</div>
-    <div class="item item2">02</div>
-    <div class="item item3">03</div>
-    <div class="item item4">04</div>
-    <div class="item item5">05</div>
-    <div class="item item6">06</div>
-    <div class="item item7">07</div>
-    <div class="item item8">08</div>
-    <div class="item item9">09</div>
-    <div class="item item10">10</div>
-    <div class="item item11">11</div>
-    <div class="item item12">12</div>
-    <div class="item item13">13</div>
-    <div class="item item14">14</div>
-    <div class="item item15">15</div>
-    <div class="item item16">16</div>
-    <div class="item item17">17</div>
-    <div class="item item18">18</div>
-    <div class="item item19">19</div>
-    <div class="item item20">20</div>
-    <div class="item item21">21</div>
-    <div class="item item22">22</div>
-    <div class="item item23">23</div>
-    <div class="item item24">24</div>
-    <div class="item item25">25</div>
+  <div class="container" id="container">
+    <div class="cube"></div>
+    <div class="cube"></div>
+    <div class="cube"></div>
+    <div class="cube"></div>
+    <div class="cube"></div>
+    <div class="cube"></div>
   </div>
 
-<script>
-//Your code goes here 
-</script>
+  <script>
+    const container = document.getElementById("container");
+    const cubes = document.querySelectorAll(".cube");
 
-  </body>
+    const containerRect = container.getBoundingClientRect();
+
+    // Arrange cubes initially in grid formation
+    const cols = 3;
+    const cubeSize = 80;
+    const gap = 20;
+    cubes.forEach((cube, index) => {
+      const row = Math.floor(index / cols);
+      const col = index % cols;
+      cube.style.left = `${20 + col * (cubeSize + gap)}px`;
+      cube.style.top = `${20 + row * (cubeSize + gap)}px`;
+    });
+
+    let activeCube = null;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    cubes.forEach((cube) => {
+      cube.addEventListener("mousedown", (e) => {
+        activeCube = cube;
+        const cubeRect = cube.getBoundingClientRect();
+
+        // Calculate mouse offset within the cube
+        offsetX = e.clientX - cubeRect.left;
+        offsetY = e.clientY - cubeRect.top;
+
+        cube.style.transition = "none";
+        cube.style.zIndex = 1000;
+
+        document.addEventListener("mousemove", onMouseMove);
+        document.addEventListener("mouseup", onMouseUp);
+      });
+    });
+
+    function onMouseMove(e) {
+      if (!activeCube) return;
+
+      let newLeft = e.clientX - containerRect.left - offsetX;
+      let newTop = e.clientY - containerRect.top - offsetY;
+
+      // Boundary constraints
+      newLeft = Math.max(0, Math.min(container.clientWidth - cubeSize, newLeft));
+      newTop = Math.max(0, Math.min(container.clientHeight - cubeSize, newTop));
+
+      activeCube.style.left = `${newLeft}px`;
+      activeCube.style.top = `${newTop}px`;
+    }
+
+    function onMouseUp() {
+      if (activeCube) {
+        activeCube.style.transition = "background-color 0.2s ease";
+        activeCube.style.zIndex = "";
+      }
+
+      activeCube = null;
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseup", onMouseUp);
+    }
+  </script>
+</body>
 </html>
