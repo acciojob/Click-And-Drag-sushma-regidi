@@ -4,116 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Draggable Items</title>
-  <style>
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background-color: #f0f0f0;
-      margin: 0;
-    }
-
-    .items {
-      position: relative;
-      width: 600px;
-      height: 400px;
-      background-color: #fff;
-      border: 3px solid #000;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: repeat(2, 1fr);
-      gap: 20px;
-      padding: 20px;
-      box-sizing: border-box;
-      overflow: hidden;
-    }
-
-    .cube {
-      width: 80px;
-      height: 80px;
-      background-color: #3498db;
-      border-radius: 10px;
-      cursor: grab;
-      position: absolute;
-      user-select: none;
-      transition: background-color 0.2s ease;
-    }
-
-    .cube:active {
-      cursor: grabbing;
-      background-color: #1d6fa5;
-    }
-  </style>
+  
+ 
 </head>
 <body>
-  <div class="items" id="items">
+	<div class="container" id="container">
     <div class="cube"></div>
     <div class="cube"></div>
     <div class="cube"></div>
     <div class="cube"></div>
-    <div class="cube"></div>
-    <div class="cube"></div>
-  </div>
+</div>
 
   <script>
-    const container = document.getElementById("items");
-    const cubes = document.querySelectorAll(".cube");
-
-    const containerRect = container.getBoundingClientRect();
-
-    const cols = 3;
-    const cubeSize = 80;
-    const gap = 20;
-
-    cubes.forEach((cube, index) => {
-      const row = Math.floor(index / cols);
-      const col = index % cols;
-      cube.style.left = `${20 + col * (cubeSize + gap)}px`;
-      cube.style.top = `${20 + row * (cubeSize + gap)}px`;
-    });
-
-    let activeCube = null;
-    let offsetX = 0;
-    let offsetY = 0;
-
-    cubes.forEach((cube) => {
-      cube.addEventListener("mousedown", (e) => {
-        activeCube = cube;
-        const cubeRect = cube.getBoundingClientRect();
-        offsetX = e.clientX - cubeRect.left;
-        offsetY = e.clientY - cubeRect.top;
-
-        cube.style.transition = "none";
-        cube.style.zIndex = 1000;
-
-        document.addEventListener("mousemove", onMouseMove);
-        document.addEventListener("mouseup", onMouseUp);
-      });
-    });
-
-    function onMouseMove(e) {
-      if (!activeCube) return;
-
-      let newLeft = e.clientX - containerRect.left - offsetX;
-      let newTop = e.clientY - containerRect.top - offsetY;
-
-      newLeft = Math.max(0, Math.min(container.clientWidth - cubeSize, newLeft));
-      newTop = Math.max(0, Math.min(container.clientHeight - cubeSize, newTop));
-
-      activeCube.style.left = `${newLeft}px`;
-      activeCube.style.top = `${newTop}px`;
-    }
-
-    function onMouseUp() {
-      if (activeCube) {
-        activeCube.style.transition = "background-color 0.2s ease";
-        activeCube.style.zIndex = "";
-      }
-      activeCube = null;
-      document.removeEventListener("mousemove", onMouseMove);
-      document.removeEventListener("mouseup", onMouseUp);
-    }
   </script>
 </body>
 </html>
