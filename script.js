@@ -1,53 +1,29 @@
-const container = document.getElementById('container');
-const cubes = document.querySelectorAll('.cube');
+const slider = document.querySelector('.items');
 
-let activeCube = null;
-let offsetX = 0;
-let offsetY = 0;
+let isDown = false;
+let startX;
+let scrollLeft;
 
-// Arrange cubes initially in grid
-cubes.forEach((cube, index) => {
-    const row = Math.floor(index / 4);
-    const col = index % 4;
-
-    cube.style.left = `${col * 90}px`;
-    cube.style.top = `${row * 90}px`;
-
-    cube.addEventListener('mousedown', startDrag);
+slider.addEventListener('mousedown', (e) => {
+    isDown = true;
+    startX = e.pageX;
+    scrollLeft = slider.scrollLeft;
 });
 
-function startDrag(e) {
-    activeCube = e.target;
+slider.addEventListener('mouseleave', () => {
+    isDown = false;
+});
 
-    const rect = activeCube.getBoundingClientRect();
-    offsetX = e.clientX - rect.left;
-    offsetY = e.clientY - rect.top;
+slider.addEventListener('mouseup', () => {
+    isDown = false;
+});
 
-    document.addEventListener('mousemove', drag);
-    document.addEventListener('mouseup', stopDrag);
-}
+slider.addEventListener('mousemove', (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const walk = startX - e.pageX;
+    slider.scrollLeft = scrollLeft + walk;
+});
 
-function drag(e) {
-    if (!activeCube) return;
-
-    const containerRect = container.getBoundingClientRect();
-    const cubeRect = activeCube.getBoundingClientRect();
-
-    let newLeft = e.clientX - containerRect.left - offsetX;
-    let newTop = e.clientY - containerRect.top - offsetY;
-
-    // Boundary constraints
-    newLeft = Math.max(0, Math.min(newLeft, container.clientWidth - cubeRect.width));
-    newTop = Math.max(0, Math.min(newTop, container.clientHeight - cubeRect.height));
-
-    activeCube.style.left = `${newLeft}px`;
-    activeCube.style.top = `${newTop}px`;
-}
-
-function stopDrag() {
-    document.removeEventListener('mousemove', drag);
-    document.removeEventListener('mouseup', stopDrag);
-    activeCube = null;
-}
 
 
